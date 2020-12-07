@@ -25,7 +25,6 @@ class ArticlesActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         toolbar.title = title
 
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

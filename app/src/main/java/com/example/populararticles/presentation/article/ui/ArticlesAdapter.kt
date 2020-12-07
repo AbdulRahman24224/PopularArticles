@@ -41,6 +41,7 @@ class ArticlesAdapter(
 
             Glide.with(iv_article.context)
                 .load(item.byline)
+                .placeholder(R.drawable.ic_user_list)
                 .into(holder.iv_article)
 
             //contentView.text = item.abstract
