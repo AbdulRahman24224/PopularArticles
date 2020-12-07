@@ -10,6 +10,7 @@ Applying Clean Architecture princples by seperating packages(Modules) into :
 - Unit Tests
 - Scrabbing Articles body 
 - Completing Filter and Search Options
+- Pagination
 
 
 
