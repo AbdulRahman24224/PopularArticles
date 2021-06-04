@@ -1,9 +1,13 @@
 package com.example.populararticles.presentation.article
 
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.populararticles.base.viewmodel.ReduxViewModel
+import com.example.populararticles.di.DefaultDispatcher
 import com.example.populararticles.domain.repository.ArticlesRepository
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -14,19 +18,29 @@ class SendSingleItemListener<T>(val item: (item: T) -> Unit) {
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class ArticlesViewModel(
-    private val articleRepository: ArticlesRepository = ArticlesRepository.getInstance(),
-    val intents: Channel<ArticleIntents> = Channel(Channel.CONFLATED),
-    _uiState: MutableStateFlow<ArticlesState> = MutableStateFlow(ArticlesState.Idle)
+class ArticlesViewModel
+@ViewModelInject
+constructor(
+    private val articleRepository: ArticlesRepository,
+    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
+
 ) : ViewModel() {
 
-    // The UI collects from this StateFlow to get its state updates
-    var uiState: MutableStateFlow<ArticlesState> = _uiState
+    val intents: Channel<ArticleIntents> = Channel(Channel.CONFLATED)
+    val _uiState: MutableStateFlow<ArticleStates> = MutableStateFlow(ArticleStates.Idle)
+    var statesList = mutableListOf<ArticleStates>()
+    private fun changeState (state: ArticleStates){
+        _uiState .value = state
+        statesList.add(state)
+    }
+
+    // state reducer
+    var uiState: MutableStateFlow<ArticleStates> = _uiState
         set(value) {
             val oldStateValue = field.value
             field = value
-            when (field.value) {
-                is ArticlesState.SuccessArticles -> {
+          when (field.value) {
+                is ArticleStates.SuccessArticles -> {
                     oldStateValue.articles.addAll(value.value.articles)
                     field.value.articles = oldStateValue.articles
                 }
@@ -34,22 +48,29 @@ class ArticlesViewModel(
                     field.value.articles = oldStateValue.articles
                 }
             }
+
         }
 
+
     init {
-        this.viewModelScope.launch {
+        this.viewModelScope.launch(defaultDispatcher) {
+
             handleIntents()
+
         }
     }
 
     fun <T> Flow<T>.runAndCatch(flowResult: SendSingleItemListener<T>) {
         val flow = this
-        viewModelScope.launch {
-            flow.catch { e -> uiState.value = ArticlesState.Error(e.localizedMessage) }
+        viewModelScope.launch(defaultDispatcher) {
+            flow
+                .flowOn(defaultDispatcher)
+                .catch { e -> changeState(ArticleStates.Error(e.localizedMessage)) }
                 .collect { it -> flowResult.sendItem(it) }
 
         }
     }
+
 
     private suspend fun handleIntents() {
         intents.consumeAsFlow().collect {
@@ -59,19 +80,90 @@ class ArticlesViewModel(
         }
     }
 
-    private fun getArticlesWithin(period: String) {
-        uiState.value = ArticlesState.Loading
+     fun getArticlesWithin(period: String) {
+         changeState( ArticleStates.Loading )
         articleRepository.getArticlesWithin(period).runAndCatch(SendSingleItemListener
         {
-            it.results.apply {
-                uiState.value = ArticlesState.SuccessArticles(this)
+
+            it.apply {
+                when(status){
+                    "false" ->  changeState(ArticleStates.Error(error))
+                    else  -> changeState(ArticleStates.SuccessArticles(results))
+                }
+
             }
         })
     }
 
-    // todo scrapping article url for content
+
     override fun onCleared() {
         intents.cancel()
         super.onCleared()
     }
+}
+
+@OptIn(ExperimentalCoroutinesApi::class)
+class ArticlesReduxViewModel
+@ViewModelInject
+constructor(
+    private val articleRepository: ArticlesRepository,
+    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
+
+) : ReduxViewModel<ArticleData>(ArticleData()) {
+
+    private val pendingActions = MutableSharedFlow<ArticleIntents>()
+
+    init {
+        this.viewModelScope.launch(defaultDispatcher) {
+            handleIntents()
+        }
+    }
+
+    private suspend fun handleIntents() {
+
+        pendingActions.collect { action ->
+            when (action) {
+               is ArticleIntents.RetrieveArticles -> getArticlesWithin(action.period)
+            }
+        }
+    }
+
+    fun getArticlesWithin(period: String) {
+        articleRepository.getArticlesWithin(period).runAndCatch(SendSingleItemListener
+        {
+            it.apply {
+                when(status){
+                    "false" ->  viewModelScope.launch { setState { copy(error = error) } }
+                    else  -> viewModelScope.launch {
+                        currentState().articles.addAll(results)
+                        setState { copy(articles = currentState().articles) }
+                    }
+                }
+            }
+        })
+    }
+
+    fun submitAction(action: ArticleIntents) {
+        viewModelScope.launch {
+            pendingActions.emit(action)
+        }
+    }
+
+    // Todo should be  generic and added to base ViewModel
+    fun <T> Flow<T>.runAndCatch(flowResult: SendSingleItemListener<T>) {
+        val flow = this
+        viewModelScope.launch(defaultDispatcher) {
+            setState { copy(isLoading = true)  }
+            flow
+                .flowOn(defaultDispatcher)
+                .catch { e -> setState { copy(error = e.localizedMessage) } }
+                .collect { it ->
+                    flowResult.sendItem(it)
+                    setState { copy(isLoading = false) }}
+
+
+
+        }
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.example.populararticles.presentation.article.ui
+package com.example.populararticles.presentation.article.ui.articles
 
 import android.view.LayoutInflater
 import android.view.View

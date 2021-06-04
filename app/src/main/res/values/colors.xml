@@ -16,5 +16,99 @@
 
     <color name="grey_text">#B3B6B9</color>
     <color name="dark_grey_text">#5E6164</color>
-    <color name="iconsGrey">#969CA2</color>
+
+
+    <color name="colorPrimaryalpha">#534254c9</color>
+    <color name="colorPrimaryDarkalpha">#51182163</color>
+    <color name="green">#34A853</color>
+
+    <!--<color name="colorPrimary">#211c53</color>-->
+    <color name="transparent">#00000000</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="gray">#616161</color>
+    <color name="darkGray"> #1E272E</color>
+    <color name="blackgray">#b9b9b9</color>
+    <color name="actionbar_opacity">#33000000</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#727272</color>
+    <color name="accent">#E040FB</color>
+    <color name="primary">#3F51B5</color>
+    <color name="primary_dark">#303F9F</color>
+    <color name="btnback">#B3B6B9</color>
+    <color name="lightBlue">#5971a2</color>
+    <color name="primaryDark">#303F9F</color>
+    <color name="primaryText">#212121</color>
+    <color name="secondaryText">#727272</color>
+    <color name="light_black">#55000000</color>
+    <color name="groupColor"> #1BB4C7</color>
+    <color name="lighting_yellow">#F9BC15</color>
+    <color name="ebony_clay">#1E272E</color>
+    <color name="bombay">#B3B6B9</color>
+    <color name="textDarkGrey">#696E72</color>
+    <color name="colorPrimary">#E7F1F3</color>
+    <color name="colorPrimaryWhite">#0563A0</color>
+    <color name="colorPrimaryFooter">#ffffff</color>
+    <color name="colorPrimaryFrist">#003659</color>
+    <color name="colorPrimarySecond">#0564A2</color>
+    <color name="shimmer_background">#dddddd</color>
+    <color name="powebycolor">#444444</color>
+    <color name="dashtop">#FFFFFF</color>
+    <color name="dashbottom">#FFFFFF</color>
+    <color name="colorPrimaryDark">#ffffff</color>
+    <color name="headercolor">#ffffff</color>
+    <color name="transparentWhite">#BBFFFFFF</color>
+    <color name="orange">#f36a10</color>
+    <color name="requestmoneycolor">#34A853</color>
+    <color name="billsandtopupcolor">#1777B9</color>
+    <color name="dashboardBlue">#004D9C</color>
+
+    <color name="hint_color">#651586d2</color>
+    <color name="alphawhite">#1777B9</color>
+    <color name="imageTintColor">#0563A0</color>
+    <color name="imageTintColor2">#ffffff</color>
+    <color name="serviceNotFound">@color/bombay</color>
+    <color name="primary_blue">#0563A0</color>
+    <color name="notititlecolor">#1777B9</color>
+    <color name="not_seen_messages_color">#e8ac22</color>
+    <color name="headerColor">#1777B9</color>
+    <color name="tbOnColor">#34A853</color>
+    <color name="tbSpotColor">#34A853</color>
+    <color name="togglecolor"> #DCEDF1</color>
+    <color name="tbSpotColorOff"> #ffffff</color>
+    <color name="qrborder"> #DCEDF1</color>
+    <color name="borderqrborder"> #1777B9</color>
+    <color name="colorScan">#0563A0</color>
+    <color name="bordercolor">#89e1dede</color>
+    <color name="FavMainColor">#ffffffff</color>
+
+    <color name="SecondFavMainColor">#191376b9</color>
+    <color name="SettingBackground">#ffffffff</color>
+    <color name="SecondSettingBackground">#191376b9</color>
+    <color name="SupportMainColor">#ffffffff</color>
+    <color name="SecondSupportMainColor">#191376b9</color>
+    <color name="loadmoney">@color/dashboardBlue</color>
+    <color name="lightergrey">#b9b9b9</color>
+    <color name="saving_red">#EA4535</color>
+    <color name="dark_red">#a50000</color>
+    <color name="lightest_grey">#ECEFF2</color>
+    <color name="crop_shade">#80FFFFA6</color>
+    <color name="Black">#000000</color>
+    <color name="White">#FFFFFF</color>
+    <color name="LightGrey">#b9b9b9</color>
+    <color name="Red">#EA4535</color>
+
+    <color name="red">#E60019</color>
+    <color name="home_back">#F7F7F7</color>
+    <color name="badgeShapeColor">#ff444444</color>
+
+    <color name="colorBlue">#004D9C</color>
+    <color name="lightGray">#969CA2</color>
+
+    <color name="grayBlack">#5E6164</color>
+
+
+    <color name="offWhite">#F7F7F7</color>
+    <color name="iconsGrey"> #969CA2</color>
+
+    <color name="lightYellow">#F36A10</color>
 </resources>

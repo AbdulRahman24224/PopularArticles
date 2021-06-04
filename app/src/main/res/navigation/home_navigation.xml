@@ -6,7 +6,7 @@
         app:startDestination="@id/ArticlesListFragment">
     <fragment
         android:id="@+id/ArticlesListFragment"
-        android:name="com.example.populararticles.presentation.article.ui.ArticlesListFragment"
+        android:name="com.example.populararticles.presentation.article.ui.articles.ArticlesListFragment"
         android:label="ArticleFragment"
         tools:layout="@layout/fragment_articles_list"
         app:enterAnim="@anim/nav_default_enter_anim"
@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/DetailsFragment"
-        android:name="com.example.populararticles.presentation.article.ui.ArticleDetailsFragment"
+        android:name="com.example.populararticles.presentation.article.ui.articles.ArticleDetailsFragment"
         android:label="Details Fragment"
         tools:layout="@layout/fragment_article_detail"
         app:enterAnim="@anim/nav_default_enter_anim"

@@ -4,4 +4,11 @@
     <string name="daily">Daily</string>
     <string name="weekly">Weekly</string>
     <string name="monthly">Monthly</string>
+    <string name="explore">Explore</string>
+    <string name="bookMarks">BookMarks</string>
+    <string name="profile">Profile</string>
+    <string name="search">Search</string>
+    <string name="More">More</string>
+    <string name="main_articles">Main Articles</string>
+    <string name="popular_articles">Popular Articles</string>
 </resources>
