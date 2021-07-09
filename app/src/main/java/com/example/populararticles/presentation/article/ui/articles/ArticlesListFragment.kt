@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowInsets
-import android.widget.ProgressBar
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -13,8 +11,8 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.*
-import androidx.navigation.fragment.NavHostFragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.populararticles.base.compose.preference.Preferences
 import com.example.populararticles.base.compose.theme.AppTheme
 import com.example.populararticles.presentation.article.*
@@ -37,11 +35,6 @@ import javax.inject.Inject
 class ArticlesListFragment : Fragment() {
 
     private val  viewModel: ArticlesReduxViewModel by viewModels ()
-    val liveData : LiveData<ArticleData> by lazy { viewModel.liveData }
-   // lateinit var articleAdapter: ArticlesAdapter
-    lateinit var rvArticles: RecyclerView
-    lateinit var progress: ProgressBar
-
 
     @Inject
     lateinit var preferences: Preferences
@@ -59,6 +52,8 @@ class ArticlesListFragment : Fragment() {
         val windowInsets = ViewWindowInsetObserver(this).start()
 
         setContent {
+
+            val navController = rememberNavController()
             CompositionLocalProvider(
                 LocalWindowInsets provides windowInsets
             ) {
@@ -66,7 +61,9 @@ class ArticlesListFragment : Fragment() {
                     val viewState by viewModel.liveData.observeAsState()
                     viewState?.apply {
                       Main(this ,
-                          actioner = ::onDiscoverAction
+                          actioner = ::onDiscoverAction ,
+                          navController
+
                       )
                     }
 
@@ -76,7 +73,7 @@ class ArticlesListFragment : Fragment() {
 
     }
 
-    private fun onDiscoverAction(action: MainFragmentAction) {
+    private fun onDiscoverAction(action: MainFragmentAction , navController: NavController) {
         when (action) {
 
         /*     -> findNavController().navigate("app.tivi://account".toUri())
@@ -96,7 +93,7 @@ class ArticlesListFragment : Fragment() {
                 }
             }
             is OpenShowDetails -> {
-                findNavController(this).navigate(
+                navController.navigate(
                     ArticlesListFragmentDirections.actionArticlesListFragmentToDetailsFragment(
                          action.article
                     )
@@ -121,34 +118,6 @@ class ArticlesListFragment : Fragment() {
             viewModel.submitAction(ArticleIntents.RetrieveArticles(FilterType.MONTHLY.value))
         }
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-      /*  bindViews(view)
-        setupRecyclerView()*/
-    }
-
-    /*private fun bindViews(view: View) {
-        rvArticles = view.findViewById<RecyclerView>(R.id.rv_articles)
-        progress = view.findViewById<ProgressBar>(R.id.progress_bar)
-    }
-
-    private fun setupRecyclerView() {
-        rvArticles.apply {
-            layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-            articleAdapter = ArticlesAdapter(
-                mutableListOf<Article>(),
-                SendSingleItemListener {
-                    findNavController().navigate(
-                        ArticlesListFragmentDirections.actionArticlesListFragmentToDetailsFragment(
-                            it
-                        )
-                    )
-                })
-            adapter = articleAdapter
-        }
-    }*/
 
 
 }

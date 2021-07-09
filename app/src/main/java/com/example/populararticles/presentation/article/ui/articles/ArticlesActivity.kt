@@ -31,14 +31,11 @@ private var currentSelectedItem by mutableStateOf(HomeNavigation.Main)
 class ArticlesActivity : AppCompatActivity() {
     @Inject
     lateinit var preferences: Preferences
-    private lateinit var binding: ActivityArticlesBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityArticlesBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-       binding.homeBottomNavigation .setContent {
+        setContent {
            CompositionLocalProvider(
                LocalWindowInsets provides ViewWindowInsetObserver(binding.homeBottomNavigation).start()
            ){

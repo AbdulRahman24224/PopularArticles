@@ -28,7 +28,9 @@ constructor(
 
     val intents: Channel<ArticleIntents> = Channel(Channel.CONFLATED)
     val _uiState: MutableStateFlow<ArticleStates> = MutableStateFlow(ArticleStates.Idle)
+
     var statesList = mutableListOf<ArticleStates>()
+
     private fun changeState (state: ArticleStates){
         _uiState .value = state
         statesList.add(state)
@@ -82,7 +84,8 @@ constructor(
 
      fun getArticlesWithin(period: String) {
          changeState( ArticleStates.Loading )
-        articleRepository.getArticlesWithin(period).runAndCatch(SendSingleItemListener
+        articleRepository.getArticlesWithin(period)
+            .runAndCatch(SendSingleItemListener
         {
 
             it.apply {

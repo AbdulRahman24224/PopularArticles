@@ -71,9 +71,9 @@ dependencies {
 
     // Navigation
     def navigation_version = "2.3.5"
-    implementation("androidx.navigation:navigation-runtime-ktx:$navigation_version")
+   /* implementation("androidx.navigation:navigation-runtime-ktx:$navigation_version")
     implementation("androidx.navigation:navigation-fragment-ktx:$navigation_version")
-    implementation("androidx.navigation:navigation-ui-ktx:$navigation_version")
+    implementation("androidx.navigation:navigation-ui-ktx:$navigation_version")*/
     implementation "androidx.navigation:navigation-compose:2.4.0-alpha01"
 
 
