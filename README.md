@@ -1,5 +1,7 @@
 # PopularArticles
 A sample app that consumes NYC Times API to retrieve most popular articles within choosen period
+
+# Main Branch : compose_ui
 ## Project Architecture 
 Applying Clean Architecture princples by seperating packages(Modules) into :
 1. Presentation Layer : Implementing Unidirectional Data Flow for ui using MVI pattern  with Coroutine Flow \n
