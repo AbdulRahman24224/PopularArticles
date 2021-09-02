@@ -1,9 +1,11 @@
-package com.example.populararticles.presentation.article
+package com.example.populararticles.presentation.articles
 
 
 import com.example.populararticles.domain.repository.ArticlesRepository
 import com.example.populararticles.entities.Article
 import com.example.populararticles.entities.ArticlesResponse
+import com.example.populararticles.presentation.articles.viewmodel.ArticleIntents
+import com.example.populararticles.presentation.articles.viewmodel.ArticleStates
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -64,8 +66,8 @@ class ArticlesViewModelTest {
                 )
             ) {
 
-                intents.send(ArticleIntents.RetrieveArticles("0"))
-                assertEquals(ArticleStates.Loading, statesList.get(0))
+                intents.send(com.example.populararticles.presentation.articles.viewmodel.ArticleIntents.RetrieveArticles("0"))
+                assertEquals(com.example.populararticles.presentation.articles.viewmodel.ArticleStates.Loading, statesList.get(0))
 
             }
         }
@@ -81,9 +83,9 @@ class ArticlesViewModelTest {
                 )
             ) {
                 viewModelScope.launch {
-                    intents.send(ArticleIntents.RetrieveArticles("0"))
-                    assertEquals(ArticleStates.Loading, statesList.get(0))
-                    assertEquals(ArticleStates.SuccessArticles(articlesList), statesList.get(1))
+                    intents.send(com.example.populararticles.presentation.articles.viewmodel.ArticleIntents.RetrieveArticles("0"))
+                    assertEquals(com.example.populararticles.presentation.articles.viewmodel.ArticleStates.Loading, statesList.get(0))
+                    assertEquals(com.example.populararticles.presentation.articles.viewmodel.ArticleStates.SuccessArticles(articlesList), statesList.get(1))
                 }
 
             }
@@ -100,9 +102,9 @@ class ArticlesViewModelTest {
             )
         ) {
             viewModelScope.launch {
-                intents.send(ArticleIntents.RetrieveArticles("-1"))
-                assertEquals(ArticleStates.Loading, statesList.get(0))
-                assertEquals(ArticleStates.Error(""), statesList.get(1))
+                intents.send(com.example.populararticles.presentation.articles.viewmodel.ArticleIntents.RetrieveArticles("-1"))
+                assertEquals(com.example.populararticles.presentation.articles.viewmodel.ArticleStates.Loading, statesList.get(0))
+                assertEquals(com.example.populararticles.presentation.articles.viewmodel.ArticleStates.Error(""), statesList.get(1))
             }
 
         }

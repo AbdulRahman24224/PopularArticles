@@ -8,12 +8,12 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context=".presentation.article.ui.articles.ArticlesActivity">
+    tools:context=".presentation.articles.MainActivity">
 
 
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/home_nav_host"
+  <!--  <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0px"
@@ -24,7 +24,7 @@
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/home_bottom_navigation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content" />-->
 
 
 </LinearLayout>

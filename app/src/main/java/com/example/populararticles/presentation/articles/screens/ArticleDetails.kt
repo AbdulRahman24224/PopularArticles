@@ -1,4 +1,4 @@
-package com.example.populararticles.presentation.article.ui.compose
+package com.example.populararticles.presentation.articles.screens
 
 import android.annotation.SuppressLint
 import android.text.Html
@@ -11,6 +11,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -20,10 +22,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.HtmlCompat
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.populararticles.R
 import com.example.populararticles.base.compose.theme.surfaceGradient
 import com.example.populararticles.entities.Article
-import com.example.populararticles.presentation.article.ArticleDetails
+import com.example.populararticles.presentation.articles.viewmodel.*
 import com.example.populararticles.utils.compose.components.AutoSizedCircularProgressIndicator
 import com.example.populararticles.utils.compose.sH
 import com.example.populararticles.utils.compose.sW
@@ -32,9 +36,29 @@ import com.google.accompanist.coil.rememberCoilPainter
 import grayBlack
 
 
+
 @ExperimentalFoundationApi
 @Composable
-fun ArticleDetailsScreen(details: ArticleDetails?, isDarkTheme : Boolean,onBack: () -> Unit) {
+fun ArticleDetailsContent(
+    viewModel : ArticleDetailsViewmodel = hiltViewModel(),
+                   navController : NavController
+){
+    val state  = viewModel.liveData.observeAsState(ArticleDetails())
+   // val viewState by rememberSaveable{ state }
+
+    val article = navController.previousBackStackEntry
+        ?.arguments?.getSerializable("article") as Article?
+
+    if (state.value.article==null && article!=null) LaunchedEffect(key1 = Unit, block = {
+        viewModel.submitAction(ArticleDetailsIntents.InitializeCurrentArticle(article))
+    })
+    ArticleDetailsScreen(state.value ){ navController.popBackStack()}
+}
+
+@ExperimentalFoundationApi
+@Composable
+fun ArticleDetailsScreen(details: ArticleDetails?, isDarkTheme : Boolean =false  , onBack: () -> Unit) {
+
     val surfaceGradient = surfaceGradient(isDarkTheme)
     Scaffold(
         /*      bottomBar = { ArticleBottomBar(onBack) },
@@ -42,10 +66,12 @@ fun ArticleDetailsScreen(details: ArticleDetails?, isDarkTheme : Boolean,onBack:
         isFloatingActionButtonDocked = true,
         floatingActionButtonPosition = FabPosition.Center
     ) {
+
         Box(modifier = Modifier
             .fillMaxSize()
             .horizontalGradientBackground(surfaceGradient)) {
             val scrollState = rememberScrollState(0)
+
          details?.article?.apply {
 
                  ArticleTopSection(this@apply, scrollState, onBack)

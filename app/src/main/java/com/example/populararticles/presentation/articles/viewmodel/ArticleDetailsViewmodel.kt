@@ -1,24 +1,22 @@
-package com.example.populararticles.presentation.article.ui.articles
+package com.example.populararticles.presentation.articles.viewmodel
 
-
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.viewModelScope
 import com.example.populararticles.base.viewmodel.ReduxViewModel
 import com.example.populararticles.di.DefaultDispatcher
 import com.example.populararticles.domain.repository.ArticlesRepository
 import com.example.populararticles.entities.Article
-import com.example.populararticles.presentation.article.ArticleDetails
-import com.example.populararticles.presentation.article.ArticleDetailsIntents
-import com.example.populararticles.presentation.article.SendSingleItemListener
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
+@HiltViewModel
 class ArticleDetailsViewmodel
-@ViewModelInject
-constructor(
+
+@Inject constructor(
     private val articleRepository: ArticlesRepository,
     @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
 
@@ -30,7 +28,7 @@ constructor(
         MutableSharedFlow<ArticleDetailsIntents>()
 
     init {
-        this.viewModelScope.launch(defaultDispatcher) {
+        viewModelScope.launch(defaultDispatcher) {
             handleIntents()
         }
     }
@@ -39,18 +37,18 @@ constructor(
 
         pendingActions.collect { action ->
             when (action) {
-                is ArticleDetailsIntents.InititalizeCurrentArticle -> setCurrentArticle(action.article)
+                is ArticleDetailsIntents.InitializeCurrentArticle -> setCurrentArticle(action.article)
             }
         }
     }
 
-    fun  setCurrentArticle(article : Article){
+    private fun  setCurrentArticle(article : Article){
         viewModelScope.launch {
             setState { copy(article = article) }
             getArticlefor(article.url)
         }
     }
-    fun getArticlefor(url: String = "") {
+    private fun getArticlefor(url: String = "") {
         articleRepository.getArticlefor(url)
             .runAndCatch(SendSingleItemListener
             { str ->

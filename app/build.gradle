@@ -4,17 +4,18 @@ plugins {
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs'
     id 'dagger.hilt.android.plugin'
+    id 'kotlin-parcelize'
 
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "com.example.populararticles"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
 
@@ -32,8 +33,8 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     composeOptions {
-        kotlinCompilerVersion "1.4.31"
-        kotlinCompilerExtensionVersion "1.0.0-beta03"
+        kotlinCompilerVersion "1.5.10"
+        kotlinCompilerExtensionVersion "1.0.0"
     }
     kotlinOptions {
         jvmTarget = '1.8'
@@ -47,9 +48,15 @@ android {
         viewBinding true
 
     }
+    lintOptions {
+        checkReleaseBuilds false
+    }
 
 }
 
+hilt {
+    enableExperimentalClasspathAggregation = true
+}
 
 dependencies {
 
@@ -74,16 +81,15 @@ dependencies {
    /* implementation("androidx.navigation:navigation-runtime-ktx:$navigation_version")
     implementation("androidx.navigation:navigation-fragment-ktx:$navigation_version")
     implementation("androidx.navigation:navigation-ui-ktx:$navigation_version")*/
-    implementation "androidx.navigation:navigation-compose:2.4.0-alpha01"
 
 
-    def hilt_version = "2.30.1-alpha"
+    def hilt_version = "2.38.1"
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
-    def hilt_viewmodels = "1.0.0-alpha03"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hilt_viewmodels"
+    def hilt_viewmodels = "1.0.0"
     kapt "androidx.hilt:hilt-compiler:$hilt_viewmodels"
+   implementation("androidx.hilt:hilt-navigation-compose:1.0.0-alpha03")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -106,7 +112,7 @@ dependencies {
     annotationProcessor("com.github.bumptech.glide:compiler:4.11.0")
 
     // compose
-    def compose_version = "1.0.0-beta07"
+    def compose_version = "1.0.1"
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
@@ -115,7 +121,8 @@ dependencies {
     implementation "androidx.compose.animation:animation:$compose_version"
     implementation "androidx.compose.runtime:runtime:$compose_version"
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
-    implementation "androidx.navigation:navigation-compose:2.4.0-alpha01"
+
+    implementation "androidx.navigation:navigation-compose:2.4.0-alpha07"
     implementation "androidx.compose.ui:ui-tooling:$compose_version"
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
 

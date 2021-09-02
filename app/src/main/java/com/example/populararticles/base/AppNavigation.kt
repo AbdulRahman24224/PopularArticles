@@ -16,39 +16,39 @@
 
 package com.example.populararticles.base
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.runtime.*
 import androidx.compose.ui.window.Dialog
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
-import androidx.navigation.NavType
+import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navArgument
-import androidx.navigation.navigation
-import com.example.populararticles.presentation.article.ui.compose.ArticleDetailsScreen
+import com.example.populararticles.entities.Article
+import com.example.populararticles.presentation.articles.screens.ArticleDetailsContent
+import com.example.populararticles.presentation.articles.screens.ExploreContent
+import com.google.gson.Gson
+import java.io.Serializable
 
 
 internal sealed class Screen(val route: String) {
-    object Explore : Screen("exploreroot")
+    object Explore : Screen("explore")
     object Following : Screen("followingroot")
     object Watched : Screen("watchedroot")
     object Search : Screen("searchroot")
 }
 
-private sealed class LeafScreen(val route: String) {
+ sealed class LeafScreen(val route: String) {
     object Explore : LeafScreen("explore")
     object Account : LeafScreen("account")
     object Search : LeafScreen("search")
 
-    object ArticleDetails : LeafScreen("article/{articleId}") {
-        fun createRoute(articleId: Long): String = "article/$articleId"
+    object ArticleDetails : LeafScreen("articledetails") {
+        fun createRoute(articleObject: String): String = "article/$articleObject"
     }
 
 
 }
 
+@ExperimentalFoundationApi
 @Composable
 internal fun AppNavigation(
     navController: NavHostController,
@@ -60,40 +60,52 @@ internal fun AppNavigation(
         /*modifier = Modifier.then()*/
 
     ) {
-        addExploreTopLevel(navController, onOpenSettings)
 
+        addExploreTopLevel(navController, onOpenSettings)
+        addShowDetails(navController )
     }
 }
 
+@ExperimentalFoundationApi
 private fun NavGraphBuilder.addExploreTopLevel(
     navController: NavController,
     openSettings: () -> Unit,
 ) {
-    navigation(
+
+    composable(Screen.Explore.route) {
+        ExploreContent(navController = navController)
+    }
+/*    navigation(
         route = Screen.Explore.route,
         startDestination = LeafScreen.Explore.route
     ) {
-      
-        addShowDetails(navController)
+
+
      
-    }
+    }*/
 }
 
+@Suppress("UNCHECKED_CAST")
+fun <T> NavHostController.getArgument(name: String): T {
+    return previousBackStackEntry?.arguments?.getSerializable(name) as? T
+        ?: throw IllegalArgumentException()
+}
 
+fun NavHostController.putArgument(name: String, arg: Serializable?) {
+    currentBackStackEntry?.arguments?.putSerializable(name, arg)
+}
+@ExperimentalFoundationApi
 private fun NavGraphBuilder.addShowDetails(navController: NavController) {
     composable(
-        route = LeafScreen.ArticleDetails.route,
+        route = LeafScreen.ArticleDetails.route/*,
         arguments = listOf(
-            navArgument("articleId") { type = NavType.LongType }
-        )
-    ) {
-        ArticleDetailsScreen(
-            navigateUp = {
-                navController.popBackStack()
-            },
-            openShowDetails = { articleId ->
-                navController.navigate(LeafScreen.ArticleDetails.createRoute(articleId))
-            }
+            navArgument("articleId") { type = NavType.StringType }
+        )*/
+    ) { entry -> // Look up "name" in NavBackStackEntry's arguments
+/*        val articleString = entry.arguments?.getString("articleId")
+        val articleObject = Gson().fromJson(articleString, Article::class.java)*/
+        ArticleDetailsContent(
+            navController = navController
         )
     }
 }
@@ -112,4 +124,67 @@ private fun NavGraphBuilder.addAccount(
            // AccountUi(navController, onOpenSettings)
         }
     }
+}
+
+
+
+/**
+ * Adds an [NavController.OnDestinationChangedListener] to this [NavController] and updates the
+ * returned [State] which is updated as the destination changes.
+ */
+@Stable
+@Composable
+private fun NavController.currentScreenAsState(): State<Screen> {
+    val selectedItem = remember { mutableStateOf<Screen>(Screen.Explore) }
+
+    DisposableEffect(this) {
+        val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
+            when {
+                isRouteInDestinationChain(destination, Screen.Explore.route) -> {
+                    selectedItem.value = Screen.Explore
+                }
+                isRouteInDestinationChain(destination, Screen.Watched.route) -> {
+                    selectedItem.value = Screen.Watched
+                }
+                isRouteInDestinationChain(destination, Screen.Following.route) -> {
+                    selectedItem.value = Screen.Following
+                }
+                isRouteInDestinationChain(destination, Screen.Search.route) -> {
+                    selectedItem.value = Screen.Search
+                }
+            }
+        }
+        addOnDestinationChangedListener(listener)
+
+        onDispose {
+            removeOnDestinationChangedListener(listener)
+        }
+    }
+
+    return selectedItem
+}
+
+/**
+ * Copied from similar function in NavigationUI.kt
+ *
+ * https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:navigation/navigation-ui/src/main/java/androidx/navigation/ui/NavigationUI.kt
+ */
+private tailrec fun findStartDestination(graph: NavDestination): NavDestination {
+    return if (graph is NavGraph) findStartDestination(graph.startDestination!!) else graph
+}
+private val NavGraph.startDestination: NavDestination?
+    get() = findNode(startDestinationId)
+
+/**
+ * Returns true if a destination with the given [route] is in the ancestor chain of [destination].
+ */
+private fun isRouteInDestinationChain(
+    destination: NavDestination,
+    route: String,
+): Boolean {
+    var currentDestination: NavDestination = destination
+    while (currentDestination.route != route && currentDestination.parent != null) {
+        currentDestination = currentDestination.parent!!
+    }
+    return currentDestination.route == route
 }

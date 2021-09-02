@@ -1,26 +1,26 @@
-package com.example.populararticles.presentation.article
+package com.example.populararticles.presentation.articles.viewmodel
 
-
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.populararticles.base.viewmodel.ReduxViewModel
 import com.example.populararticles.di.DefaultDispatcher
 import com.example.populararticles.domain.repository.ArticlesRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class SendSingleItemListener<T>(val item: (item: T) -> Unit) {
     fun sendItem(item: T) = item(item)
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
+@HiltViewModel
 class ArticlesViewModel
-@ViewModelInject
-constructor(
+@Inject constructor(
     private val articleRepository: ArticlesRepository,
     @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
 
@@ -106,9 +106,9 @@ constructor(
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
+@HiltViewModel
 class ArticlesReduxViewModel
-@ViewModelInject
-constructor(
+@Inject constructor(
     private val articleRepository: ArticlesRepository,
     @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
 
@@ -117,7 +117,7 @@ constructor(
     private val pendingActions = MutableSharedFlow<ArticleIntents>()
 
     init {
-        this.viewModelScope.launch(defaultDispatcher) {
+        viewModelScope.launch(defaultDispatcher) {
             handleIntents()
         }
     }
