@@ -24,7 +24,8 @@ fun ExploreContent(viewModel : ArticlesReduxViewModel = hiltViewModel(),
     val state  = viewModel.liveData.observeAsState(ArticleData())
     val viewState by rememberSaveable{ state }
 
-    if (viewState==null || viewState?.articles.isNullOrEmpty())LaunchedEffect(key1 = Unit, block = {
+    if (viewState==null || viewState?.articles.isNullOrEmpty())
+        LaunchedEffect(key1 = Unit, block = {
       viewModel.submitAction(ArticleIntents.RetrieveArticles(FilterType.MONTHLY.value))
     })
         ArticlesListView(viewState ,

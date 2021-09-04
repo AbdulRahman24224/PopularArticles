@@ -26,7 +26,7 @@
     <color name="transparent">#00000000</color>
     <color name="colorAccent">#FF4081</color>
     <color name="gray">#616161</color>
-    <color name="darkGray"> #1E272E</color>
+    <color name="darkGray">#1E272E</color>
     <color name="blackgray">#b9b9b9</color>
     <color name="actionbar_opacity">#33000000</color>
     <color name="primary_text">#212121</color>
@@ -40,7 +40,7 @@
     <color name="primaryText">#212121</color>
     <color name="secondaryText">#727272</color>
     <color name="light_black">#55000000</color>
-    <color name="groupColor"> #1BB4C7</color>
+    <color name="groupColor">#1BB4C7</color>
     <color name="lighting_yellow">#F9BC15</color>
     <color name="ebony_clay">#1E272E</color>
     <color name="bombay">#B3B6B9</color>
@@ -73,10 +73,10 @@
     <color name="headerColor">#1777B9</color>
     <color name="tbOnColor">#34A853</color>
     <color name="tbSpotColor">#34A853</color>
-    <color name="togglecolor"> #DCEDF1</color>
-    <color name="tbSpotColorOff"> #ffffff</color>
-    <color name="qrborder"> #DCEDF1</color>
-    <color name="borderqrborder"> #1777B9</color>
+    <color name="togglecolor">#DCEDF1</color>
+    <color name="tbSpotColorOff">#ffffff</color>
+    <color name="qrborder">#DCEDF1</color>
+    <color name="borderqrborder">#1777B9</color>
     <color name="colorScan">#0563A0</color>
     <color name="bordercolor">#89e1dede</color>
     <color name="FavMainColor">#ffffffff</color>
@@ -108,7 +108,7 @@
 
 
     <color name="offWhite">#F7F7F7</color>
-    <color name="iconsGrey"> #969CA2</color>
+    <color name="iconsGrey">#969CA2</color>
 
     <color name="lightYellow">#F36A10</color>
 </resources>

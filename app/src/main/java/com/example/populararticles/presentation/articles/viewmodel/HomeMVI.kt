@@ -1,6 +1,7 @@
 package com.example.populararticles.presentation.articles.viewmodel
 
 import android.os.Parcelable
+import com.example.populararticles.base.viewmodel.BaseState
 import com.example.populararticles.entities.Article
 import kotlinx.parcelize.Parcelize
 
@@ -22,17 +23,18 @@ sealed class ArticleStates(
 }
 
 @Parcelize
-data class ArticleData (val isIdle :Boolean = true ,val isLoading :Boolean = false ,
+data class ArticleData (val isIdle :Boolean = true ,
                          val articles: MutableList<Article> = mutableListOf() ,
-                         val error : String =""
- ) : Parcelable
+                        override var error: String ="",
+                        override var isLoading: Boolean= false
+
+ ) : BaseState(),Parcelable
 
 
 // Actions
 sealed class ArticleDetailsIntents {
     data class InitializeCurrentArticle(val article :Article) : ArticleDetailsIntents()
 }
-data class ArticleDetails (val isIdle :Boolean = true ,val isLoading :Boolean = false ,
-                        val article:Article?=null ,
-                        val error : String =""
-)
+data class ArticleDetails (val isIdle :Boolean = true , val article:Article?=null ,
+                           override var error: String ="",
+                           override var isLoading: Boolean = false) : BaseState()

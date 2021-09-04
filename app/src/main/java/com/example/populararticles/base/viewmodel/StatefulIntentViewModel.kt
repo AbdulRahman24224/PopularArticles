@@ -30,12 +30,12 @@ abstract class StatefulIntentViewModel<Intent, State>(
     private val statesBroadcast = BroadcastChannel<State>(1)
     private val stateMutex = Mutex()
     val states = statesBroadcast.asFlow()
-    protected suspend fun setState(reducer: State.() -> State) = 
+    protected suspend fun setState(reducer: State.() -> State) =
         stateMutex.withLock {
             state = state.reducer()
             statesBroadcast.send(state)
         }
-    protected suspend fun withState(action: (State).() -> Unit) = 
+    protected suspend fun withState(action: (State).() -> Unit) =
         setState {
             this.apply(action)
         }

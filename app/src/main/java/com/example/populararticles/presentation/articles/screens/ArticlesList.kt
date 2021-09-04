@@ -1,5 +1,6 @@
 package com.example.populararticles.presentation.articles.screens
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -36,6 +37,8 @@ fun ArticlesListView(
 ) {
 
 state?.apply {
+
+    Log.v("viewState" , toString())
 
     Surface(Modifier.fillMaxSize()) {
         Box(Modifier.fillMaxSize()) {

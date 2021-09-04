@@ -1,10 +1,13 @@
 
 package com.example.populararticles.base.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.populararticles.presentation.articles.viewmodel.SendSingleItemListener
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -12,22 +15,42 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.reflect.KProperty1
 
-abstract class ReduxViewModel<S>(
-    initialState: S
+
+abstract class BaseState {
+    abstract var isLoading: Boolean
+     abstract var error : String
+}
+
+abstract class BaseViewModel<S : BaseState>(
+    initialState: S  ,
+    val defaultDispatcher: CoroutineDispatcher
 ) : ViewModel() {
+
     private val state = MutableStateFlow(initialState)
     private val stateMutex = Mutex()
 
-    /**
-     * Returns a snapshot of the current state.
-     */
     fun currentState(): S = state.value
 
     val liveData: LiveData<S>
         get() = state.asLiveData()
 
-    protected suspend fun <T> Flow<T>.collectAndSetState(reducer: S.(T) -> S) {
-        return collect { item -> setState { reducer(item) } }
+
+    fun <T> Flow<T>.runAndCatch( loadingChanged: SendSingleItemListener<Boolean> , flowResult: SendSingleItemListener<T> ) {
+        val flow = this
+        viewModelScope.launch(defaultDispatcher) {
+
+            loadingChanged.sendItem(true)
+
+            flow
+                .flowOn(defaultDispatcher)
+                .catch { e -> launchSetState {  this.apply { error = e.localizedMessage }} }
+                .collect { it ->
+                    flowResult.sendItem(it)
+                    loadingChanged.sendItem(false)
+
+                }
+
+        }
     }
 
     fun <A> selectObserve(prop1: KProperty1<S, A>): LiveData<A> {
@@ -51,13 +74,16 @@ abstract class ReduxViewModel<S>(
     }
 
     protected suspend fun setState(reducer: S.() -> S) {
-        stateMutex.withLock {
-            state.value = reducer(state.value)
-        }
+
+            stateMutex.withLock {
+                state.value = reducer(state.value)
+                Log.v("newState", state.value.toString())
+            }
+
     }
 
     protected fun CoroutineScope.launchSetState(reducer: S.() -> S) {
-        launch { this@ReduxViewModel.setState(reducer) }
+        launch { this@BaseViewModel.setState(reducer) }
     }
 
     protected suspend fun withState(block: (S) -> Unit) {
@@ -67,7 +93,7 @@ abstract class ReduxViewModel<S>(
     }
 
     protected fun CoroutineScope.withState(block: (S) -> Unit) {
-        launch { this@ReduxViewModel.withState(block) }
+        launch { this@BaseViewModel.withState(block) }
     }
 
     override fun onCleared() {

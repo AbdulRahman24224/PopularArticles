@@ -1,14 +1,15 @@
 package com.example.populararticles.presentation.articles.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.example.populararticles.base.viewmodel.ReduxViewModel
+import com.example.populararticles.base.viewmodel.BaseViewModel
 import com.example.populararticles.di.DefaultDispatcher
 import com.example.populararticles.domain.repository.ArticlesRepository
 import com.example.populararticles.entities.Article
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,10 +19,11 @@ class ArticleDetailsViewmodel
 
 @Inject constructor(
     private val articleRepository: ArticlesRepository,
-    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
+    @DefaultDispatcher private  val dispatcher: CoroutineDispatcher
 
-) : ReduxViewModel<ArticleDetails>(
-    ArticleDetails()
+) : BaseViewModel<ArticleDetails>(
+    ArticleDetails() ,
+    dispatcher
 ) {
 
     private val pendingActions =
@@ -50,7 +52,8 @@ class ArticleDetailsViewmodel
     }
     private fun getArticlefor(url: String = "") {
         articleRepository.getArticlefor(url)
-            .runAndCatch(SendSingleItemListener
+            .runAndCatch( SendSingleItemListener { b->   viewModelScope.launch { setState { copy(isLoading = b) }} } ,
+                SendSingleItemListener
             { str ->
                currentState().article?.let {
                    it.details = str
@@ -67,21 +70,5 @@ class ArticleDetailsViewmodel
         }
     }
 
-    // Todo should be  generic and added to base ViewModel
-    fun <T> Flow<T>.runAndCatch(flowResult: SendSingleItemListener<T>) {
-        val flow = this
-        viewModelScope.launch(defaultDispatcher) {
-            setState { copy(isLoading = true)  }
-            flow
-                .flowOn(defaultDispatcher)
-                .catch { e -> setState { copy(error = e.localizedMessage) } }
-                .collect { it ->
-                    flowResult.sendItem(it)
-                    setState { copy(isLoading = false) }}
-
-
-
-        }
-    }
 
 }
