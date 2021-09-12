@@ -40,8 +40,8 @@ import grayBlack
 @ExperimentalFoundationApi
 @Composable
 fun ArticleDetailsContent(
-    viewModel : ArticleDetailsViewmodel = hiltViewModel(),
-                   navController : NavController
+    viewModel : ArticleDetailsViewModel = hiltViewModel(),
+    navController : NavController
 ){
     val state  = viewModel.liveData.observeAsState(ArticleDetails())
    // val viewState by rememberSaveable{ state }

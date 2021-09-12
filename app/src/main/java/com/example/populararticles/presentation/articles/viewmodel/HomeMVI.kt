@@ -17,8 +17,7 @@ sealed class ArticleStates(
 ) {
     object Idle : ArticleStates()
     object Loading : ArticleStates()
-    class SuccessArticles(list: List<Article> ) :
-        ArticleStates(list as MutableList<Article>)
+    class SuccessArticles(list: List<Article> ) : ArticleStates(list as MutableList<Article>)
     data class Error(val error: String?) : ArticleStates()
 }
 

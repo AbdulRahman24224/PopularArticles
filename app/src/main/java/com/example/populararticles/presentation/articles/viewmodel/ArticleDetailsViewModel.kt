@@ -2,6 +2,7 @@ package com.example.populararticles.presentation.articles.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.example.populararticles.base.viewmodel.BaseViewModel
+import com.example.populararticles.base.viewmodel.SendSingleItemListener
 import com.example.populararticles.di.DefaultDispatcher
 import com.example.populararticles.domain.repository.ArticlesRepository
 import com.example.populararticles.entities.Article
@@ -15,7 +16,7 @@ import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
-class ArticleDetailsViewmodel
+class ArticleDetailsViewModel
 
 @Inject constructor(
     private val articleRepository: ArticlesRepository,
@@ -55,7 +56,7 @@ class ArticleDetailsViewmodel
             .runAndCatch( SendSingleItemListener { b->   viewModelScope.launch { setState { copy(isLoading = b) }} } ,
                 SendSingleItemListener
             { str ->
-               currentState().article?.let {
+               state.article?.let {
                    it.details = str
                    viewModelScope.launch {  setState { copy(article = it) }}
                }

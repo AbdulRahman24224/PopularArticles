@@ -40,58 +40,64 @@ fun ArticleCard(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
 ) {
+
     Card(modifier = modifier) {
         Column(
             modifier = if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier
         ) {
-           article?.apply {
-               media?.apply {
-                val url =    if (isNotEmpty()) get(0)?.let {
-                       it.mediaMetadata?.get(2)?.url ?: ""
-                   }?:"" else ""
+            article?.apply {
+                media?.apply {
+                    val url = if (isNotEmpty()) get(0)?.let {
+                        it.mediaMetadata?.get(2)?.url ?: ""
+                    } ?: "" else ""
 
-                   Image(
-                     painter = rememberCoilPainter(request = url)
-                       ,
-                       contentDescription = stringResource(R.string.daily)
-                   )
-               }
+                    Image(
+                        modifier = Modifier.fillMaxWidth(),
+                        painter = rememberCoilPainter(request = url),
+                        contentDescription = stringResource(R.string.daily)
+                    )
+                }
 
 
-               CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                   Text(
-                       text = title ?: "No title",
-                       style = MaterialTheme.typography.body1 ,
-                       maxLines = 3 ,
-                       modifier = Modifier.requiredHeight(90.dp).padding(4.dp)/*.align(Alignment.CenterStart)*/
-                   )
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                    Text(
+                        text = title ?: "No title",
+                        style = MaterialTheme.typography.body2,
+                        maxLines = 3,
+                        modifier = Modifier
+                            .requiredHeight(90.dp)
+                            .padding(8.dp)/*.align(Alignment.CenterStart)*/
+                    )
 
-                   Row(
-                       Modifier.fillMaxWidth().padding(4.dp),
-                   ) {
-                      val center_padding =  Modifier.padding(4.dp).align(Alignment.CenterVertically)
-                       Text(
-                           text = section ?: "No title",
-                           style = MaterialTheme.typography.caption.merge(text_bold),
-                           color = Color.Black,
-                           modifier = center_padding
-                       )
-                       Spacer(Modifier.weight(1f))
-                       Text(
-                           text = published_date ?: "",
-                           style = MaterialTheme.typography.caption,
-                           color =  grayBlack(),
-                           modifier = center_padding
-                       )
+                    Row(
+                        Modifier.fillMaxWidth(),
+                    ) {
+                        val center_padding = Modifier
+                            .padding(4.dp)
+                            .align(Alignment.CenterVertically)
+                        Text(
+                            text = section ?: "No title",
+                            style = MaterialTheme.typography.caption.merge(text_bold),
+                            color = Color.Black,
+                            modifier = center_padding
+                        )
+                        Spacer(Modifier.weight(1f))
+                        Text(
+                            text = published_date ?: "",
+                            style = MaterialTheme.typography.caption,
+                            color = grayBlack(),
+                            modifier = center_padding
+                        )
 
-                   }
+                    }
 
-               }
-           }
+                }
+            }
 
 
         }
     }
+
 }
 
 @Preview

@@ -40,11 +40,11 @@ state?.apply {
 
     Log.v("viewState" , toString())
 
-    Surface(Modifier.fillMaxSize()) {
-        Box(Modifier.fillMaxSize()) {
+    Surface() {
+        Box() {
             var appBarHeight by remember { mutableStateOf(0) }
 
-            LazyColumn(Modifier.fillMaxSize()) {
+            LazyColumn() {
                 item {
                     val height = with(LocalDensity.current) { appBarHeight.toDp() }
                     Spacer(Modifier.requiredHeight(height))
@@ -103,13 +103,15 @@ private fun  CarouselWithHeader(
                 items = items,
                 onItemClick = onItemClick,
                 modifier = Modifier
-                    .requiredHeight(350.dp)
+                    .requiredHeight(260.dp)
                     .fillMaxWidth()
             )
         }
 
     }
 }
+
+
 @Composable
 private fun  ArticleCarousel(
     items: List<Article>,
@@ -127,8 +129,7 @@ private fun  ArticleCarousel(
             onClick = { onItemClick(item) },
             modifier = Modifier
                 .padding(padding)
-                .fillParentMaxHeight()
-                .aspectRatio(2 / 3f)
+                .aspectRatio(2/ 3f)
         )
     }
 }

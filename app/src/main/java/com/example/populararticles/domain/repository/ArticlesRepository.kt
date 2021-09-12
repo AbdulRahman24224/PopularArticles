@@ -18,16 +18,18 @@ constructor(
 
 ) {
 
-    fun getArticlesWithin(period: String) : Flow<ArticlesResponse> =
-        flow<ArticlesResponse> {
+    fun getArticlesWithin(period: String) : Flow<ArticlesResponse?> =
+        flow<ArticlesResponse?> {
+
             val articlesResponse = service.getArticlesWithin(period)
             when (articlesResponse) {
                 is Result.Success -> {
-
                     emit(articlesResponse.data!!)
                 }
                 is Result.Failure -> {
+                    emit(ArticlesResponse(status = "false" ,error = "Error Retrieving data"))
                 }
+                is Result.NetworkError ->  emit(ArticlesResponse(status = "false",  error = "Network Error"))
             }
 
         }

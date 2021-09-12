@@ -11,20 +11,6 @@ private const val API_KEY = "api-key"
 private const val API_KEY_VALUE = "k32jrKem6G6bfDG15r1AVUtwCs0DIqNh"
 
 
-/*
-private val retrofit: Retrofit by lazy {
-    Retrofit.Builder()
-        .baseUrl(SERVER_BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .addCallAdapterFactory( MyCallAdapterFactory())
-        .build()
-}
-
-val articlesService: ArticlesApis by lazy {
-    retrofit.create(ArticlesApis::class.java)
-}
-*/
-
 
 interface ArticlesApis {
 

@@ -2,6 +2,7 @@ package com.example.populararticles.presentation.articles.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.example.populararticles.base.viewmodel.BaseViewModel
+import com.example.populararticles.base.viewmodel.SendSingleItemListener
 import com.example.populararticles.di.DefaultDispatcher
 import com.example.populararticles.domain.repository.ArticlesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,13 +13,11 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class SendSingleItemListener<T>(val item: (item: T) -> Unit) {
-    fun sendItem(item: T) = item(item)
-}
+
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
-class ArticlesReduxViewModel
+class HomeViewModel
 @Inject constructor(
     private val articleRepository: ArticlesRepository,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher
@@ -50,15 +49,16 @@ class ArticlesReduxViewModel
 
    private fun getArticlesWithin(period: String) {
 
-        articleRepository.getArticlesWithin(period).runAndCatch( SendSingleItemListener { b -> viewModelScope.launch { setState { copy(isLoading = b) }} } ,
+        articleRepository.getArticlesWithin(period).runAndCatch(
+            SendSingleItemListener { b -> viewModelScope.launch { setState { copy(isLoading = b) }} } ,
             SendSingleItemListener
         {
-            it.apply {
+            it?.apply {
                 when(status){
-                    "false" ->  viewModelScope.launch { setState { currentState().apply { error = it.error }} }
+                    "false" ->  viewModelScope.launch { setState { state.apply { error = it.error }} }
                     else  -> viewModelScope.launch {
-                        currentState().articles.addAll(results)
-                        setState { copy(articles = currentState().articles) }
+                        state.articles.addAll(results)
+                        setState { copy(articles = state.articles , error = "") }
                     }
                 }
             }
